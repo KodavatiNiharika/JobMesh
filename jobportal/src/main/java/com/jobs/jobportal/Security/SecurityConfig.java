@@ -15,20 +15,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .formLogin(form -> form.disable())
-            .httpBasic(httpBasic -> httpBasic.disable());
+public SecurityFilterChain securityFilterChain(
+        HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
 
-        return http.build();
-    }
+    http
+        .cors(cors -> {})
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+
+            // PUBLIC APIs
+            .requestMatchers(
+                "/api/users/signup",
+                "/api/users/login"
+            ).permitAll()
+
+            // everything else requires login
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .formLogin(form -> form.disable())
+        .httpBasic(httpBasic -> httpBasic.disable());
+
+    return http.build();
+}
+
 
 
     @Bean

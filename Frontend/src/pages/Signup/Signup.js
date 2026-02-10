@@ -1,6 +1,7 @@
-import React, {use, useState} from "react";
+import React, {use, useEffect, useState} from "react";
 import "./Signup.css"
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import {useNavigate} from "react-router-dom"; 
 function Signup() {
@@ -10,7 +11,12 @@ function Signup() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const db = ["admin", "user"];
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if(token) {
+            navigate("/dashboard");
+        }
+    }, [navigate]);
     const handleSubmit = async(e) => {
         e.preventDefault();
         if(password !== ReTypedPassword) {
@@ -21,22 +27,31 @@ function Signup() {
             setError("Enter credentials");
             return;
         }
-        try {
-        const response = await axios.post("http://localhost:8080/api/users/signup", {
-            userName,
-            email: userEmail,
-            password
-        });
 
-        console.log("User created:", response.data);
-        alert("Signup successful!");
-        } catch (err) {
-        console.error(err);
-        alert("Signup failed. Email may already exist.");
+        try {
+            const response = await axios.post("http://localhost:8080/api/users/signup", {
+                userName,
+                email: userEmail,
+                password
+            });
+            if(response.data.token) {
+                const token = response.data.token;
+                localStorage.setItem("token", token);
+                console.log("User created:", response.data);
+                alert("Signup successful!");
+                navigate("/dashboard");
+            } else if(response.data.error) {
+                setError(response.data.error);
+            } else {
+                setError("Signup failed");
+            }
+        } catch(err) {
+            console.log(err);
+            setError("Signup failed");
         }
-        navigate("/dashboard");
     };
     return (
+        <>
         <div className="signup-form">
             <h1> Signup page </h1>
             <form className="signup-form" onSubmit={handleSubmit}>
@@ -46,9 +61,12 @@ function Signup() {
                 <input type="password" className="retype-password" placeholder="Re-Type Password" onChange={(e) => setReTypedPassword(e.target.value)}></input>
                 
                 <button type="submit" className="signup-button">Signup</button>
+                <p> Already have an account?</p>
+                <Link to='/login'>Login</Link>
             </form>
             {error && <p style={{color:"white"}}>{error}</p>}
         </div>
+        </>
     );
 }
 export default Signup;

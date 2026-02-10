@@ -1,0 +1,7 @@
+{
+    "type": "java",
+    "name": "Debug Spring Boot",
+    "request": "attach",
+    "hostName": "localhost",
+    "port": 5005
+}

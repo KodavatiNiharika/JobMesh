@@ -8,7 +8,6 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const db = ["admin", "user"];
     const handleSubmit = async(e) => {
         e.preventDefault();
         if(userEmail === "" || password === "") {
@@ -21,8 +20,10 @@ function Login() {
                 password
             });
             const token = response.data.token;
+            const userId = response.data.userId;
             if(token) {
-                localStorage.setItem("jwt", token);
+                localStorage.setItem("token", token);
+                localStorage.setItem("userId", userId);
                 alert("Login successful!");
                 navigate("/dashboard");
             } else alert("User not found.");

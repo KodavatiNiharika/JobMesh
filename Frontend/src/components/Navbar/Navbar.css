@@ -1,0 +1,89 @@
+/* ===== Navbar Styles ===== */
+.navBar {
+    width: 100%;
+    position: fixed; /* sticks to top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* above everything */
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #121212, #121212); /* example gradient */
+    box-shadow: 0 8px 20px rgba(210, 201, 18, 0.468);
+}
+
+
+/* ===== Navbar Links with shining box effect ===== */
+.NavBarLinks {
+    color: #E0E0E0;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 12px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    background: #1E1E1E; /* solid dark background like signup button */
+    box-shadow: 0 4px 12px rgba(191, 222, 16, 0.4); /* subtle depth */
+    transition: all 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    font-size: 16px;
+    display: inline-block; /* keeps padding around text */
+}
+
+/* Hover effect */
+.NavBarLinks:hover {
+    transform: translateY(-2px); /* slight lift */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); /* deeper shadow on hover */
+    color: #ffffff; /* optional highlight */
+}
+
+
+
+/* ===== Logout Button ===== */
+.Logout {
+    padding: 8px 16px;
+    border: 2px solid #de0c0c; /* red outline around the button */
+    border-radius: 8px;
+    background: linear-gradient(145deg, #121212, #ffffff40); /* existing gradient */
+    color: #d02929;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 4px 12px rgba(250, 4, 4, 0.2);
+}
+
+/* Hover effect */
+.Logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(226, 27, 27, 0.3);
+    border-color: #ff4c4c; /* slightly brighter red on hover */
+}
+
+/* Active/click effect */
+.Logout:active {
+    transform: translateY(0);
+    background: linear-gradient(145deg, #ffffff20, #ffffff40);
+    box-shadow: 0 3px 12px rgba(86, 9, 9, 0.2);
+    border-color: #de0c0c; /* reset border on click */
+}
+
+
+/* ===== Mobile Responsiveness ===== */
+@media (max-width: 480px) {
+    .navBar {
+        flex-direction: column;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .NavBarLinks {
+        font-size: 14px;
+        margin: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .Logout {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -3,7 +3,9 @@ import { BrowserRouter } from 'react-router-dom';
 import './App.css';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login/Login';
+import Navbar from './components/Navbar/Navbar';
 import Signup from './pages/Signup/Signup';
+import Profile from './pages/Profile/Profile';
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -11,8 +13,10 @@ function App() {
     <div className="App"> 
         <Routes>
           <Route path='/dashboard' element={<Dashboard/>}/>
-          <Route path='/' element={<Login/>}/>
-          <Route path='/signup' element={<Signup/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/' element={<Signup/>}/>
+          <Route path='/navbar' element={<Navbar/>}/>
+          <Route path='/profile' element={<Profile/>} />
         </Routes> 
     </div>
   );

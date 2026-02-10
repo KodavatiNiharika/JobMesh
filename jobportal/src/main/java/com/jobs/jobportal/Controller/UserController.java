@@ -1,34 +1,40 @@
-package com.jobs.jobportal.Controller;
-import com.jobs.jobportal.Security.JwtUtil;
+package com.jobs.jobportal.controller;
+
+import com.jobs.jobportal.model.User;
+import com.jobs.jobportal.service.UserService;
 import org.springframework.web.bind.annotation.*;
-import com.jobs.jobportal.User;
-import com.jobs.jobportal.UserRepo;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserRepo userRepo;
-    private final JwtUtil jwtUtil;
-    public UserController(UserRepo userRepo, JwtUtil jwtUtil) {
-        this.userRepo = userRepo;
-        this.jwtUtil = jwtUtil;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/signup")
-    public User signup(@RequestBody User user) {
-        return userRepo.save(user);  // save user to DB
+    public Map<String, Object> signup(@RequestBody User user) {
+        User saved = userService.signup(user);
+        String token = userService.generateToken(saved);
+
+        return Map.of(
+            "token", token,
+            "userId", saved.getId()
+        );
     }
 
+
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody User user) {
-        // simple login logic
-        User found = userRepo.findAll()
-            .stream()
-            .filter(u -> u.getEmail().equals(user.getEmail()) && u.getPassword().equals(user.getPassword()))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Invalid credentials"));
-        String token = jwtUtil.generateToken(found.getEmail());
-        return Map.of("token", token);
+    public Map<String, Object> login(@RequestBody User user) {
+        User found = userService.login(user);
+        String token = userService.generateToken(found);
+
+        return Map.of(
+            "token", token,
+            "userId", found.getId()
+        );
     }
 }
