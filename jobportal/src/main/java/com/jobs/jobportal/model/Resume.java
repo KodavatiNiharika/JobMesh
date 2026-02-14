@@ -1,9 +1,10 @@
 package com.jobs.jobportal.model;
-
+import com.jobs.jobportal.model.*;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "resumes")
+
 public class Resume {
 
     @Id
@@ -11,11 +12,11 @@ public class Resume {
     private Long id;
 
     private String fileName;
-
-    @Lob 
-    private byte[] fileData; 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(name = "file_data", columnDefinition = "bytea")
+    private byte[] fileData;
+    
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     public Long getId() {

@@ -8,7 +8,7 @@ function Dashboard() {
         if(token) {
             try {
                 const decoded = jwtDecode(token);
-                console.log(decoded);
+                // console.log(decoded);
                 setEmail(decoded.sub);
             } catch(err) {
                 console.log("error :" + err);

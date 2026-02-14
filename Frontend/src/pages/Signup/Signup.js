@@ -36,6 +36,8 @@ function Signup() {
             });
             if(response.data.token) {
                 const token = response.data.token;
+                const userId = response.data.userId;
+                localStorage.setItem("userId", userId);
                 localStorage.setItem("token", token);
                 console.log("User created:", response.data);
                 alert("Signup successful!");

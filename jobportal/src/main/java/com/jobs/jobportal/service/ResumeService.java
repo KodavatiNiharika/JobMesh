@@ -33,7 +33,10 @@ public class ResumeService {
             throw new RuntimeException("User not found");
         }
 
-
+        Resume existing = resumeRepository.findByUserId(userId);
+        if (existing != null) {
+            resumeRepository.delete(existing);
+        }
         Resume resume = new Resume();
         resume.setUser(user);
         resume.setFileName(file.getOriginalFilename());
@@ -53,5 +56,25 @@ public class ResumeService {
             throw new RuntimeException("Failed to save resume", e); 
         }
     }
+
+    public Resume getResumeById(Long id) {
+        return resumeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resume not found"));
+    }
+
+    public void deteleResumeById(Long id) {
+        Resume resume = resumeRepository.findById(id).orElseThrow(() -> new RuntimeException("Resume not found"));
+        resumeRepository.delete(resume);
+    }
+    
+
+public Resume getResumeByUserId(Long userId) {
+    
+    return resumeRepository.findByUserId(userId);
+}
+
+
+
+
 }
 

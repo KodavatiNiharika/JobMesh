@@ -1,51 +1,165 @@
 import React, { useState } from "react";
 import "./Profile.css";
+import { createPortal } from "react-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import axios from "axios";
+import { useEffect } from "react";
+import { useRef } from "react";
+
 const Profile = () => {
+  const [resumeUrl, setResumeUrl] = useState("");
+  const [resumeId, setResumeId] = useState(null);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [resumeName, setResumeName] = useState("");
+  const fileInputRef = useRef(null);
+
+
+
   const user = {
     userName: "Niharika",
     email: "niharika@gmail.com",
   };
-    const [resume, setResume] = useState(null);
-    const handleResumeUpload = async () => {
-  if (!resume) {
-    alert("Please select a file first!");
+    
+   useEffect(() => {
+  const fetchResume = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      console.log(userId);
+      console.log(token);
+      const response = await axios.get(
+        `http://localhost:8080/api/resume/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setResumeId(response.data.id);
+      setResumeName(response.data.fileName);
+
+    } catch (error) {
+      console.log("No resume found or unauthorized");
+    }
+  };
+
+  fetchResume();
+}, []);
+
+
+
+    const handleResumeUpload = () => {
+        fileInputRef.current.click();
+      };
+      
+      const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("userId", localStorage.getItem("userId"));
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:8080/api/resume/upload",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const savedResume = response.data;
+
+      setResumeId(savedResume.id);
+      setResumeName(savedResume.fileName);
+
+      alert("Resume uploaded successfully!");
+
+    } catch (error) {
+      console.error(error);
+      alert("Upload failed!");
+    }
+  };
+
+
+
+const handleViewResume = async (resumeId) => {
+  if (!resumeId) {
+    alert("No resume uploaded yet!");
     return;
   }
 
-  const formData = new FormData();
-  formData.append("file", resume);
+  try {
+    const token = localStorage.getItem("token");
 
-  const userId = localStorage.getItem("userId");
-  formData.append("userId", userId);
-  console.log(userId);
+    const response = await axios.get(
+      `http://localhost:8080/api/resume/view/${resumeId}`,
+      {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const file = new Blob([response.data], { type: "application/pdf" });
+    const fileURL = URL.createObjectURL(file);
+
+    setResumeUrl(fileURL);
+    setIsResumeOpen(true);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load resume");
+  }
+};
+ 
+  const handleDelete = async () => {
+  if (!resumeId) {
+    alert("No resume to delete!");
+    return;
+  }
+
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete your resume?"
+  );
+  if (!confirmDelete) return;
 
   try {
     const token = localStorage.getItem("token");
-    console.log(token);
 
-const response = await axios.post(
-  "http://localhost:8080/api/resume/upload",
-  formData,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-  }
-);
+    await axios.delete(
+      `http://localhost:8080/api/resume/${resumeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
+    // Clear frontend state
+    setResumeId(null);
+    setResumeName("");
+    setResumeUrl("");
+    setIsResumeOpen(false);
 
-    alert("Resume uploaded successfully!");
-    console.log(response.data);
+    alert("Resume deleted successfully!");
 
   } catch (error) {
-    console.log(error);
-    alert("Upload failed!");
+    console.error(error);
+    alert("Failed to delete resume!");
   }
 };
 
+
+  const handleCloseResume = () => {
+    setIsResumeOpen(false);
+  };
 
 
   return (
@@ -73,24 +187,53 @@ const response = await axios.post(
           {/* ===== RESUME CARD ===== */}
           <div className="panel-card wide horizontal-card">
 
-            <div className="card-left">
-                <input 
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => setResume(e.target.files[0])}
-                    />
-                    <button className="btn primary" onClick={handleResumeUpload}>
-                    Upload Resume
-                    </button>
-            </div>
+            <div className="card-left resume-left">
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+
+              {resumeId && (
+                <div className="resume-display">
+                  <span className="resume-icon">📄</span>
+                  <span className="resume-text">{resumeName}</span>
+                </div>
+              )}
+              </div>
+
 
             <div className="card-right">
-              <button className="btn primary" onClick={handleResumeUpload}>Upload</button>
-              <button className="btn secondary">View</button>
-              <button className="btn outline">Replace</button>
-              <button className="btn danger">Delete</button>
+              <button className="btn primary" onClick={handleResumeUpload}>
+                {resumeId ? "Upload New Version" : "Upload"}
+              </button>
+              {resumeId && (
+                 <>
+              <button className="btn secondary" onClick={() => handleViewResume(resumeId)} disabled={!resumeId}>View</button>
+               {isResumeOpen &&
+                  createPortal(
+                    <div className="resume-modal">
+                      <button className="close-btn" onClick={handleCloseResume}>
+                        ×
+                      </button>
+
+                      <iframe
+                        src={resumeUrl}
+                        title="Resume"
+                        className="resume-frame"
+                      />
+                    </div>,
+                    document.body
+                  )
+                }
+              <button className="btn danger" onClick={handleDelete} disabled={!resumeId} >Delete</button>
+              </>
+                 )}
             </div>
           </div>
+         
 
           {/* ===== SELECTED COMPANIES ===== */}
           <div className="panel-card wide horizontal-card">

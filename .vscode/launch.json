@@ -3,5 +3,14 @@
     "name": "Debug Spring Boot",
     "request": "attach",
     "hostName": "localhost",
-    "port": 5005
+    "port": 5005,
+    "configurations": [
+        {
+            "type": "java",
+            "name": "JobportalApplication",
+            "request": "launch",
+            "mainClass": "com.jobs.jobportal.JobportalApplication",
+            "projectName": "jobportal"
+        }
+    ]
 }
