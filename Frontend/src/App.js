@@ -12,7 +12,8 @@ function App() {
   return (
     <div className="App"> 
         <Routes>
-          <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path='/dashboard' element={<Dashboard userId={1} />
+}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/' element={<Signup/>}/>
           <Route path='/navbar' element={<Navbar/>}/>

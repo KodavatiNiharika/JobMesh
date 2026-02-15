@@ -1,27 +1,42 @@
-import {jwtDecode} from "jwt-decode";
-import {useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
+
 function Dashboard() {
-    const [email, setEmail] = useState("");
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if(token) {
-            try {
-                const decoded = jwtDecode(token);
-                // console.log(decoded);
-                setEmail(decoded.sub);
-            } catch(err) {
-                console.log("error :" + err);
-            }
-        }
-    }, []);
-    
-    return (
-        <>
-        <Navbar/>
-        <h1>Dashboard</h1>
-        <h2>{email}</h2>
-        </>
-    );
-};
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    axios.get("http://localhost:8080/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => setJobs(res.data))
+    .catch(err => console.error(err));
+  }, []);
+
+  return (
+    <div>
+      <Navbar />
+      <h2>Jobs With ATS Score &gt; 40</h2>
+
+      {jobs.map((job) => (
+        <div key={job.id} style={{
+          border: "1px solid #ccc",
+          padding: "15px",
+          marginBottom: "10px",
+          borderRadius: "8px"
+        }}>
+          <h3>{job.title}</h3>
+          <p><strong>Company:</strong> {job.company}</p>
+          <p><strong>Location:</strong> {job.location}</p>
+          <p>{job.description}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default Dashboard;
