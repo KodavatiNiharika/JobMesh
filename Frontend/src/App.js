@@ -6,6 +6,7 @@ import Login from './pages/Login/Login';
 import Navbar from './components/Navbar/Navbar';
 import Signup from './pages/Signup/Signup';
 import Profile from './pages/Profile/Profile';
+import UploadJob from './pages/UploadJobs/UploadJob';
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path='/' element={<Signup/>}/>
           <Route path='/navbar' element={<Navbar/>}/>
           <Route path='/profile' element={<Profile/>} />
+          <Route path='/jobupload' element={<UploadJob/>} />
         </Routes> 
     </div>
   );

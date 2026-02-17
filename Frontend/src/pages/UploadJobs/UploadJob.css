@@ -1,0 +1,116 @@
+/* ===== Page Background ===== */
+.uploadContainer {
+    min-height: 100vh;
+    padding-top: 120px; /* space for fixed navbar */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: linear-gradient(180deg, #121212, #0d0d0d);
+}
+
+/* ===== Card ===== */
+.uploadCard {
+    width: 500px;
+    background: #1E1E1E;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(210, 201, 18, 0.25);
+    transition: 0.3s ease;
+}
+
+.uploadCard:hover {
+    box-shadow: 0 12px 30px rgba(210, 201, 18, 0.35);
+}
+
+/* ===== Title ===== */
+.uploadTitle {
+    text-align: center;
+    color: #E0E0E0;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* ===== Form Layout ===== */
+.uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ===== Inputs ===== */
+.uploadInput,
+.uploadTextarea {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #2c2c2c;
+    background-color: #121212;
+    color: #E0E0E0;
+    font-size: 14px;
+    outline: none;
+    transition: 0.25s ease;
+}
+
+/* Textarea specific */
+.uploadTextarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Focus effect */
+.uploadInput:focus,
+.uploadTextarea:focus {
+    border-color: #d2c912;
+    box-shadow: 0 0 10px rgba(210, 201, 18, 0.4);
+}
+
+/* Read only username field */
+.readOnlyInput {
+    background-color: #1a1a1a;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* ===== Button ===== */
+.uploadButton {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(145deg, #d2c912, #b8b10f);
+    color: #121212;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(210, 201, 18, 0.3);
+}
+
+.uploadButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(210, 201, 18, 0.5);
+}
+
+.uploadButton:active {
+    transform: translateY(0);
+}
+
+.uploadButton:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ===== Message ===== */
+.uploadMessage {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #E0E0E0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    .uploadCard {
+        width: 90%;
+        padding: 25px;
+    }
+}

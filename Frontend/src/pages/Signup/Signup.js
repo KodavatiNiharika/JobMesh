@@ -39,6 +39,7 @@ function Signup() {
                 const userId = response.data.userId;
                 localStorage.setItem("userId", userId);
                 localStorage.setItem("token", token);
+                localStorage.setItem("username", userName);
                 console.log("User created:", response.data);
                 alert("Signup successful!");
                 navigate("/dashboard");

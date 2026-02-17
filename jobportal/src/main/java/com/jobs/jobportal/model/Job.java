@@ -20,7 +20,11 @@ public class Job {
 
     private String location;
 
+    private String applyLink;
+
     private LocalDateTime createdAt;
+
+    private LocalDateTime expiredAt;
 
     // getters & setters
 
@@ -67,4 +71,27 @@ public class Job {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getApplyLink() {
+        return applyLink;
+    }
+
+    public void setApplyLink(String applyLink) {
+        this.applyLink = applyLink;
+    }
+
+    public LocalDateTime getExpiredAt() {
+        return expiredAt;
+    }
+
+    public void setExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.expiredAt = LocalDateTime.now().plusDays(10);
+    }
+
 }

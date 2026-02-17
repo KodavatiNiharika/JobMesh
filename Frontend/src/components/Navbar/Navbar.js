@@ -13,6 +13,7 @@ function Navbar() {
             <Link to="/" className="NavBarLinks"> Home </Link>
             <Link to="/jobs" className="NavBarLinks"> Jobs </Link>
             <Link to="/profile" className="NavBarLinks"> Profile </Link>
+            <Link to="/jobupload" className="NavBarLinks"> Upload a job</Link>
             <button onClick={handleLogout} className="Logout"> Logout </button>
         </nav>
     );

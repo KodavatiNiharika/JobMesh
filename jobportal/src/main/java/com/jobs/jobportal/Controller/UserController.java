@@ -22,7 +22,8 @@ public class UserController {
 
         return Map.of(
             "token", token,
-            "userId", saved.getId()
+            "userId", saved.getId(),
+            "username", saved.getUserName()
         );
     }
 
@@ -34,7 +35,8 @@ public class UserController {
 
         return Map.of(
             "token", token,
-            "userId", found.getId()
+            "userId", found.getId(),
+            "username", found.getUserName()
         );
     }
 }

@@ -19,11 +19,14 @@ function Login() {
                 email : userEmail,
                 password
             });
+            console.log(response);
             const token = response.data.token;
             const userId = response.data.userId;
+            const userName = response.data.username;
             if(token) {
                 localStorage.setItem("token", token);
                 localStorage.setItem("userId", userId);
+                localStorage.setItem("username", userName);
                 alert("Login successful!");
                 navigate("/dashboard");
             } else alert("User not found.");

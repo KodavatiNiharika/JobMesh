@@ -11,6 +11,8 @@ const Profile = () => {
   const [resumeId, setResumeId] = useState(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [resumeName, setResumeName] = useState("");
+  const [userJobs, setUserJobs] = useState([]);
+
   const fileInputRef = useRef(null);
 
 
