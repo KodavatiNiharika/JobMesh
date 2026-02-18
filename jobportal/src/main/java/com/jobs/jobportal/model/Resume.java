@@ -19,6 +19,10 @@ public class Resume {
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
+
+    @Column(name = "full_text", columnDefinition = "TEXT")
+    private String fullText;
+
     public Long getId() {
         return id;
     }
@@ -43,7 +47,11 @@ public class Resume {
         return user;
     }
 
-    public void setUser(User user) {   // ✅ CORRECT
+    public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setFullText(String fullText) {
+        this.fullText = fullText;
     }
 }

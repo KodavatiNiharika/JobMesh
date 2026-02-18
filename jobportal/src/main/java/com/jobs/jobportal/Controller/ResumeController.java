@@ -30,7 +30,7 @@ public class ResumeController {
     public Resume uploadResume(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userId") Long userId) throws IOException {
-        return resumeService.saveResume(file, userId);
+        return resumeService.saveResume(file, userId, null);
     }
 
     @GetMapping("/view/{id}")

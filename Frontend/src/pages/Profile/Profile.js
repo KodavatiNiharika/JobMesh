@@ -59,6 +59,8 @@ const Profile = () => {
       );
 
       setResume(response.data);
+      
+      console.log(response);
     } catch {
       setResume(null);
     }
