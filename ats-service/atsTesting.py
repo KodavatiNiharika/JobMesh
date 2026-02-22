@@ -1,17 +1,13 @@
-from ats_scoring import extract_resume_text, extract_jd_text
+from keyword import extract_keywords
 
-# Resume
-with open("resume.pdf", "rb") as f:
-    resume_text = extract_resume_text(f, file_type="pdf")
-
-print("Resume Text (first 500 chars):")
-print(resume_text)
-
-# Job Description
-jd_text = """
-Looking for a React frontend developer with experience in Spring Boot, AWS, 
-and computer networks. Knowledge of Docker and Kubernetes is a plus.
+# Sample Job Description text
+test_text = """
+Looking for a Java developer with Spring Boot and REST API experience.
+Must know MySQL and Microservices architecture.
 """
 
-print("JD Text:")
-print(jd_text)
+keywords = extract_keywords(test_text)
+
+print("Extracted Keywords:\n")
+for word in keywords:
+    print(word)

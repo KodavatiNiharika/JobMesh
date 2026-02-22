@@ -1,0 +1,6 @@
+PyMuPDF
+python-docx
+nltk
+scikit-learn
+spacy
+sentence-transformers

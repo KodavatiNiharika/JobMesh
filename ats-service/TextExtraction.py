@@ -59,3 +59,6 @@ if __name__ == "__main__":
  
     print(text, flush=True)
 
+"""This module extracts raw text from resume and job description files in PDF and DOCX formats using PyMuPDF and python-docx.
+ It acts as the input layer of the ATS system, converting uploaded documents into plain text for downstream NLP processing.
+"""
