@@ -26,7 +26,8 @@ public SecurityFilterChain securityFilterChain(
             // PUBLIC APIs
             .requestMatchers(
                 "/api/users/signup",
-                "/api/users/login"
+                "/api/users/login",
+                "/api/jobs"
             ).permitAll()
 
             // everything else requires login

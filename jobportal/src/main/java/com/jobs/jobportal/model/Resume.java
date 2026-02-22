@@ -54,4 +54,13 @@ public class Resume {
     public void setFullText(String fullText) {
         this.fullText = fullText;
     }
+
+    public String getUserName() {
+        return user != null ? user.getUserName() : null;
+    }
+
+    public String getResumeText() {
+        return fullText;
+    }
+
 }

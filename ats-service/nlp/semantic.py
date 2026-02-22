@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-def calculate_semantic_score(jd_phrases, resume_phrases, threshold=0.75):
+def calculate_semantic_score(jd_phrases, resume_phrases, threshold=0.60):
 
     if not jd_phrases or not resume_phrases:
         return 0, []

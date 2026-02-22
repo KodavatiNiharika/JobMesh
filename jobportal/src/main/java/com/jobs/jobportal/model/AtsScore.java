@@ -17,7 +17,7 @@ public class AtsScore {
     private Long jobId;
 
     @Column(nullable = false)
-    private Integer atsScore;
+    private double atsScore;
 
     // getters and setters
     public Long getId() { return id; }
@@ -28,6 +28,6 @@ public class AtsScore {
     public Long getJobId() { return jobId; }
     public void setJobId(Long jobId) { this.jobId = jobId; }
 
-    public Integer getAtsScore() { return atsScore; }
-    public void setAtsScore(Integer atsScore) { this.atsScore = atsScore; }
+    public double getAtsScore() { return atsScore; }
+    public void setAtsScore(double atsScore) { this.atsScore = atsScore; }
 }
