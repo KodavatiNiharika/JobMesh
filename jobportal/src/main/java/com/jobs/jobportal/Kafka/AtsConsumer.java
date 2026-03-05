@@ -17,23 +17,25 @@ import com.jobs.jobportal.model.Resume;
 import com.jobs.jobportal.repository.AtsScoreRepository;
 import com.jobs.jobportal.repository.JobRepository;
 import com.jobs.jobportal.repository.ResumeRepo;
+import com.jobs.jobportal.repository.UserRepo;
 
 @Component
 public class AtsConsumer {
 
     private final AtsScoreRepository atsScoreRepository;
-
+    private final UserRepo userRepository;
     private final ResumeRepo resumeRepo;
     private final JobRepository jobRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String atsServiceUrl = "http://localhost:8000/ats-score";
     private final KafkaProducerService kafkaProducer;
-    public AtsConsumer(JobRepository jobRepository, ResumeRepo resumeRepo, AtsScoreRepository atsScoreRepository, KafkaProducerService kafkaProducer) {
+    public AtsConsumer(JobRepository jobRepository, UserRepo userRepository, ResumeRepo resumeRepo, AtsScoreRepository atsScoreRepository, KafkaProducerService kafkaProducer) {
         this.jobRepository = jobRepository;
         this.resumeRepo = resumeRepo;
         this.atsScoreRepository = atsScoreRepository;
         this.kafkaProducer = kafkaProducer;
+        this.userRepository = userRepository;
     }
     @KafkaListener(topics="ats-topic", groupId = "job-ats-group")
     public void processAtsMessage(String message) {
@@ -72,7 +74,7 @@ public class AtsConsumer {
                 }
             }
             if(!selectedUsers.isEmpty())
-            kafkaProducer.sendMessage("mail-topic", objectMapper.writeValueAsString(new MailRequest(jobId, selectedUsers)));
+            kafkaProducer.sendMessage("mail-topic", objectMapper.writeValueAsString(new MailRequest(selectedUsers, job.getTitle(), job.getDescription(), job.getLocation(),job.getCompanyName(),  job.getApplyLink())));
         } catch(Exception e) {
             e.printStackTrace();
         }
