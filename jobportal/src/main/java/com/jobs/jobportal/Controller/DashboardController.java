@@ -36,9 +36,10 @@ public class DashboardController {
         Long userId = userRepo.findByEmail(email)
                 .orElseThrow()
                 .getId();
-
+        
+        int atsThreshold = userRepo.getAtsThreshold(userId);
         // Step 1: Get jobIds with ATS > 40
-        List<Long> jobIds = atsRepo.findJobIdsWithHighAts(email);
+        List<Long> jobIds = atsRepo.findJobIdsWithHighAts(email, atsThreshold);
 
         // Step 2: Fetch full Job objects
         return jobRepo.findAllById(jobIds);

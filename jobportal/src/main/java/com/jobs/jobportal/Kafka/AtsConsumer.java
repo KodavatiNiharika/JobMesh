@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobs.jobportal.model.AtsScore;
 import com.jobs.jobportal.model.Job;
 import com.jobs.jobportal.model.Resume;
+import com.jobs.jobportal.model.User;
 import com.jobs.jobportal.repository.AtsScoreRepository;
 import com.jobs.jobportal.repository.JobRepository;
 import com.jobs.jobportal.repository.ResumeRepo;
@@ -42,21 +43,27 @@ public class AtsConsumer {
         try {
             Long jobId = objectMapper.readValue(message, Long.class); //Java Object ⇄ JSON
             Job job = jobRepository.findById(jobId).orElseThrow();
-            List<ResumeData> resumeDataList = resumeRepo.findAll().stream().
-                        map(r -> {
+            
+            
+            List<Resume> resumes = resumeRepo.findAll(); 
+
+            List<ResumeData> resumeDataList = resumes.stream()
+                .map(r -> {
                             ResumeData data = new ResumeData();
                             data.setUserEmail(r.getUserEmail());
                             data.setFullText(r.getResumeText());
                             return data;
                         })
-                        .toList();
+                .toList();
             AtsRequest request = new AtsRequest();
             request.setDescription(job.getDescription());
             request.setJobId(jobId);
             request.setResumes(resumeDataList);
-            List<Resume> resumes = resumeRepo.findAll(); 
+
             Map<String, String> emailToUsername = resumes.stream()
-            .collect(Collectors.toMap(Resume::getUserEmail, Resume::getUserName));
+                .collect(Collectors.toMap(Resume::getUserEmail, Resume::getUserName));
+
+
             AtsScoreResponse[] scores = restTemplate.postForEntity(atsServiceUrl, request, AtsScoreResponse[].class).getBody();
             List<String> selectedUsers = new ArrayList<>();
             if(scores != null) {
@@ -64,11 +71,15 @@ public class AtsConsumer {
                         AtsScore atsScore = new AtsScore();
                         atsScore.setJobId(jobId);
                         atsScore.setUserEmail(score.getUserEmail());
+                        String email = score.getUserEmail();
+                        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+                        int ats_threshold = user.getatsThreshold();
+
                         atsScore.setUserName(emailToUsername.get(score.getUserEmail()));
                         atsScore.setAtsScore(score.getAtsScore());
                         atsScoreRepository.save(atsScore);
                         System.out.println("User: " + score.getUserEmail() + " ATS score: " + score.getAtsScore());
-                        if(score.getAtsScore() >= 90) {
+                        if(score.getAtsScore() >= ats_threshold) {
                             selectedUsers.add(score.getUserEmail());
                         }
                 }
