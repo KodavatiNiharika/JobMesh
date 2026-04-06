@@ -36,10 +36,17 @@ public class ResumeController {
     @GetMapping("/view/{id}")
     public ResponseEntity<byte[]> viewResume(@PathVariable Long id) {
         Resume resume = resumeService.getResumeById(id);
-        String contentType = 
-                resume.getFileName().endsWith(".pdf") 
-                ? "application/pdf" 
-                : "application/octet-stream";
+        String fileName = resume.getFileName().toLowerCase();
+
+        String contentType;
+
+        if (fileName.endsWith(".pdf")) {
+            contentType = "application/pdf";
+        } else if (fileName.endsWith(".docx")) {
+            contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        } else {
+            contentType = "application/octet-stream";
+        } 
         return ResponseEntity.ok()
             .header("Content-Disposition", "inline; filename=\"" + resume.getFileName() + "\"") //content disposition prevents download
             .contentType(MediaType.parseMediaType(contentType))

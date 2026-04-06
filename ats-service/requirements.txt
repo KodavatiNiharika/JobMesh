@@ -4,3 +4,6 @@ nltk
 scikit-learn
 spacy
 sentence-transformers
+python-docx
+pymupdf
+docx2pdf

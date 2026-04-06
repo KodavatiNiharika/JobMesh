@@ -4,8 +4,7 @@ import "./Navbar.css";
 function Navbar() {
     const navigate = useNavigate();
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
+        localStorage.clear();
         navigate("/");
     };
     return (

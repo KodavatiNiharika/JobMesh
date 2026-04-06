@@ -1,18 +1,27 @@
 import fitz 
 from docx import Document
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+from docx2pdf import convert
+import os
 
+def convert_docx_to_pdf(input_path):
+    temp_pdf = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    temp_pdf.close()
+    convert(input_path, temp_pdf.name)
+    return temp_pdf.name
 
-def extract_text_from_pdf(pdf_file):
+def extract_text_from_pdf(file_path):
     text = ""
-    doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
+    doc = fitz.open(file_path)
     for page in doc:
         text += page.get_text()
+    doc.close()
     return text
 
-def extract_text_from_docx(docx_file):
-    doc = Document(docx_file)
-    text = "\n".join([para.text for para in doc.paragraphs])
-    return text
+def extract_text_from_docx(docx_path):
+    doc = Document(docx_path)
+    return "\n".join([para.text for para in doc.paragraphs])
 
 
 def extract_resume_text(file, file_type="pdf"):
@@ -50,12 +59,17 @@ if __name__ == "__main__":
 
     # Extract text
     if file_type.lower() == "pdf":
-        text = extract_text_from_pdf(open(file_path, "rb"))
+        text = extract_text_from_pdf(file_path)
     elif file_type.lower() == "docx":
-        text = extract_text_from_docx(open(file_path, "rb"))
+        try:
+            pdf_path = convert_docx_to_pdf(file_path)
+            text = extract_text_from_pdf(pdf_path)
+            os.remove(pdf_path)
+        except Exception:
+            # fallback if conversion fails
+            text = extract_text_from_docx(file_path)
     else:
         raise ValueError("Unsupported file type")
-
  
     print(text, flush=True)
 

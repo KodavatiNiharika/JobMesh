@@ -45,12 +45,15 @@ def calculate_ats_score(resume_text, jd_text):
         resume_phrases
     )
 
+    if exact_matches == jd_keywords:
+        final_score = 100
+    else : 
     #  Final Weighted Score 
-    final_score = (
-        exact_score * EXACT_WEIGHT +
-        phrase_score * PHRASE_WEIGHT +
-        semantic_score * SEMANTIC_WEIGHT
-    ) * 100
+        final_score = (
+            exact_score * EXACT_WEIGHT +
+            phrase_score * PHRASE_WEIGHT +
+            semantic_score * SEMANTIC_WEIGHT
+        ) * 100
 
     return {
         "exact_score": round(exact_score * 100, 2),

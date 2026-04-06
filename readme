@@ -1,0 +1,16 @@
+Start the docker containers
+docker start resources-kafka-1
+docker start resources-zookeeper-1
+
+FAST API
+cd ats-service
+venv\Scripts\activate   - activate virtual env for packages
+uvicorn main:app --reload --port 8000
+
+
+frontend
+cd frontend
+npm start
+
+backend
+run the jobportalapplication.java

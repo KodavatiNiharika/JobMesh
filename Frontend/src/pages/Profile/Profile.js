@@ -13,7 +13,7 @@ const Profile = () => {
   const [resumeUrl, setResumeUrl] = useState("");
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [userJobs, setUserJobs] = useState([]);
-  const [atsThreshold, setAtsThreshold] = useState(0);
+  const [atsThreshold, setAtsThreshold] = useState();
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
@@ -38,11 +38,16 @@ const Profile = () => {
       console.error("Failed to fetch ATS threshold", error);
     }
   };
+const handleAtsThreshold = (e) => {
+  const value = Number(e.target.value);
 
-  const handleAtsThreshold = (e) => {
-    setAtsThreshold(e.target.value);
-  };
+  if (value < 0 || value > 100) {
+    alert("ATS Threshold should be between 0 and 100!!");
+    return;
+  }
 
+  setAtsThreshold(value);
+};
   const saveAtsThreshold = async () => {
   try {
     await axios.put(
@@ -121,6 +126,15 @@ const Profile = () => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Resume must be PDF or DOCX");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -151,8 +165,8 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      const file = new Blob([response.data], { type: "application/pdf" });
+      const type = response.headers["content-type"] || "application/octet-stream";
+      const file = new Blob([response.data], { type });
       setResumeUrl(URL.createObjectURL(file));
       setIsResumeOpen(true);
     } catch {
@@ -232,7 +246,7 @@ const Profile = () => {
             <div className="card-left">
               <input
                 type="file"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf,.docx"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 hidden

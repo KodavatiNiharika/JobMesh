@@ -1,10 +1,14 @@
 package com.jobs.jobportal.Security;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.jobs.jobportal.model.User;
+import com.jobs.jobportal.repository.UserRepo;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,9 +19,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private UserRepo userRepository;
 
-    public JwtRequestFilter(JwtUtil jwtUtil) {
+    public JwtRequestFilter(JwtUtil jwtUtil, UserRepo userRepository) {
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -35,24 +41,29 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 String email = jwtUtil.extractEmail(token);
 
-                if (email != null && jwtUtil.validateToken(token, email)) {
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(
-                                    email,
-                                    null,
-                                    java.util.Collections.emptyList()
-                            );
+                    Optional<User> userOpt = userRepository.findByEmail(email); // fetch from DB
 
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    if (userOpt.isPresent()) {
+                        User user = userOpt.get();
+                        if(jwtUtil.validateToken(token, user.getEmail())) {
+                            UsernamePasswordAuthenticationToken auth =
+                                new UsernamePasswordAuthenticationToken(
+                                        user.getEmail(),
+                                        null,
+                                        java.util.Collections.emptyList()
+                                );
+
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }                        
+                    }
                 }
-
             } catch (Exception ignored) {
                 // Do NOT manually send error
                 // Just let Spring Security handle it
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }
