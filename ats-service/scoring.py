@@ -41,8 +41,8 @@ def calculate_ats_score(resume_text, jd_text):
 
     # Semantic Similarity 
     semantic_score, semantic_matches = calculate_semantic_score(
-        jd_phrases,
-        resume_phrases
+        resume_text,
+        jd_text
     )
 
     if exact_matches == jd_keywords:
